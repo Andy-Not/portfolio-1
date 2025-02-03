@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { Separator } from "@/components/ui/separator"
 
 interface Props {
   title: string;
@@ -9,9 +10,10 @@ interface Props {
   location: string;
   image?: string;
   links?: readonly {
-    icon: React.ReactNode;
-    title: string;
-    href: string;
+    icon?: React.ReactNode;
+    title?: string;
+    href?: string;
+    tools?: string[];
   }[];
 }
 
@@ -46,16 +48,35 @@ export function HackathonCard({
         )}
       </div>
       {links && links.length > 0 && (
-        <div className="mt-2 flex flex-row flex-wrap items-start gap-2">
-          {links?.map((link, idx) => (
-            <Link href={link.href} key={idx}>
-              <Badge key={idx} title={link.title} className="flex gap-2">
-                {link.icon}
-                {link.title}
-              </Badge>
-            </Link>
-          ))}
-        </div>
+          <div className="mt-2 flex flex-wrap items-start gap-2">
+            {links.map((link, idx) => (
+                <div key={idx} className="flex flex-wrap items-center gap-2 w-full">
+                  {/* Check if link has a title, icon, and href */}
+                  {link.title && link.href && (
+                      <Link href={link.href}>
+                        <Badge className="flex items-center gap-2">
+                          {link.icon} {link.title}
+                        </Badge>
+                      </Link>
+                  )}
+
+                  {link.tools && link.tools.length > 0 && link.href && (
+                      <Separator orientation="vertical" className="h-6 w-[1px] bg-gray-300" />
+                  )}
+
+                  {/* Tools Badges */}
+                  {link.tools && (
+                      <div className="flex flex-wrap gap-2">
+                        {link.tools.map((tool, i) => (
+                            <Badge key={i} variant="outline" className="flex items-center gap-2 flex-grow-0">
+                              {tool}
+                            </Badge>
+                        ))}
+                      </div>
+                  )}
+                </div>
+            ))}
+          </div>
       )}
     </li>
   );
